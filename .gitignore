@@ -1,0 +1,8 @@
+build/
+node_modules/
+assets/
+coverage/
+.nyc_output
+config.json
+*.log
+test.html

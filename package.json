@@ -1,0 +1,65 @@
+{
+  "name": "token-server",
+  "main": "build/index",
+  "typings": "build/index",
+  "description": "Command Transport Protocol",
+  "version": "0.0.0",
+  "scripts": {
+    "watch": "tsc --watch",
+    "build": "rm -rf build && tsc",
+    "test": "yarn build && yarn nyc",
+		"nyc": "nyc mocha 'build/test/**/*.js'"
+  },
+  "engines": {
+    "node": ">=7.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robojones/token-server.git"
+  },
+  "keywords": [
+    "command",
+    "execute",
+    "async",
+    "tcp",
+    "socket"
+  ],
+  "author": "robojones",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robojones/token-server/issues"
+  },
+  "homepage": "https://github.com/robojones/token-server#readme",
+  "devDependencies": {
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^9.3.0",
+    "merge2": "^1.2.0",
+    "mocha": "^4.0.1",
+    "nyc": "^11.4.1",
+    "source-map-support": "^0.5.3",
+    "tslint": "^5.8.0",
+    "tslint-config-ultra": "^2.0.0",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "@types/mz": "^0.0.32",
+    "@types/through2": "^2.0.33",
+    "mz": "^2.7.0",
+    "once-promise": "^1.0.1",
+    "through2": "^2.0.3",
+    "ts-nice": "^1.0.1"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "reporter": [
+      "lcov",
+      "html",
+      "text"
+    ],
+    "exclude": [
+      "build/test"
+    ]
+  }
+}
