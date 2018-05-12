@@ -56,7 +56,8 @@
     "reporter": [
       "lcov",
       "html",
-      "text"
+			"text",
+			"text-summary"
     ],
     "exclude": [
       "build/test"
