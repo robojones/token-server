@@ -4,12 +4,14 @@ import { Connection } from '../connection/Connection'
 import { Status } from './Status'
 import { TokenAPI } from './TokenAPI'
 
+export type TokenClientOptions = tls.ConnectionOptions
+
 export class TokenClient extends TokenAPI {
-	private options: tls.ConnectionOptions
+	private options: TokenClientOptions
 	private socket: tls.TLSSocket
 	private connection: Connection | null = null
 
-	constructor(options: tls.ConnectionOptions) {
+	constructor(options: TokenClientOptions) {
 		super()
 
 		this.options = options
