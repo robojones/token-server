@@ -8,7 +8,7 @@
     "watch": "tsc --watch",
     "build": "rm -rf build && tsc",
     "test": "yarn build && yarn nyc",
-		"nyc": "nyc mocha 'build/test/**/*.js'"
+    "nyc": "nyc mocha 'build/test/**/*.js'"
   },
   "engines": {
     "node": ">=7.0.0"
