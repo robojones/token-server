@@ -16,10 +16,6 @@ export class TokenServer extends TokenAPI {
 
 		this.options = options
 
-		if (this.status) {
-			console.log('asdf')
-		}
-
 		this.server = tls.createServer(options)
 		this.applyListeners()
 		this.connect()

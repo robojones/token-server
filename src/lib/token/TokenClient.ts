@@ -84,7 +84,7 @@ export class TokenClient extends TokenAPI {
 			}
 
 			// Emit own close event.
-			this.emit('close', hadError)
+			console.log('emit close', this.emit('close', hadError))
 		})
 
 		this.socket.on('secureConnect', () => {
