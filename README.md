@@ -73,10 +73,10 @@ client.send(token)
 	- [send()](#tokenclientsend)
 - [TokenServer](#tokenserver)
 	- [constructor](#tokenserver-constructor)
-	- [Event: "close"](#tokenserver--close-)
-	- [Event: "connect"](#tokenserver--connect-)
-	- [Event: "error"](#tokenserver--error-)
-	- [Event: "token"](#tokenserver--token-)
+	- [Event: "close"](#tokenserver-close)
+	- [Event: "connect"](#tokenserver-connect)
+	- [Event: "error"](#tokenserver-error)
+	- [Event: "token"](#tokenserver-token)
 	- [close()](#tokenserverclose)
 	- [connect()](#tokenserverconnect)
 
@@ -122,7 +122,7 @@ client.on('connect', () => {
 
 #### TokenClient: "error"
 
-This event is emitted when a connection error occured. It is always followed by a ["close" event](#tokenclient--close-).
+This event is emitted when a connection error occured. It is always followed by a ["close" event](#tokenclient-close).
 
 ```typescript
 client.on('error', (error) => {
@@ -220,7 +220,7 @@ server.on('connect', () => {
 
 #### TokenServer: "error"
 
-This event is emitted when a server error occured. It is always followed by a ["close" event](#tokenserver--close-).
+This event is emitted when a server error occured. It is always followed by a ["close" event](#tokenserver-close).
 
 ```typescript
 server.on('error', (error) => {
