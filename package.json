@@ -35,21 +35,17 @@
   "devDependencies": {
     "@types/mocha": "^2.2.44",
     "@types/node": "^9.3.0",
-    "merge2": "^1.2.0",
+    "@types/through2": "^2.0.33",
     "mocha": "^4.0.1",
     "nyc": "^11.4.1",
-    "source-map-support": "^0.5.3",
+    "through2": "^2.0.3",
     "tslint": "^5.8.0",
     "tslint-config-ultra": "^2.0.0",
     "typescript": "^2.6.2"
   },
   "dependencies": {
-    "@types/mz": "^0.0.32",
-    "@types/through2": "^2.0.33",
     "codeclimate-test-reporter": "^0.5.0",
-    "once-promise": "^1.0.1",
-    "through2": "^2.0.3",
-    "ts-nice": "^1.0.1"
+    "once-promise": "^1.0.1"
   },
   "nyc": {
     "extension": [
