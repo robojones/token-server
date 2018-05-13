@@ -30,7 +30,7 @@ jobs:
           command: yarn report-coverage
       - save_cache:
           name: Save build files
-          key: build-{{ .BuildNum }}
+          key: build-{{ .Revision }}
           paths:
             - build/
   publish:
@@ -40,7 +40,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore build files
-          key: build-{{ .BuildNum }}
+          key: build-{{ .Revision }}
       - run:
           name: Set NPM token
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
