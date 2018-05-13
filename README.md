@@ -9,7 +9,7 @@ It allows you to send messages (called tokens) from a client to a server and bac
 
 This example shows, how a client and a server can be connected using self-signed certificates.
 
-For some help on how to generate self-signed certificates [see this solved issue](https://github.com/nodejs/help/issues/253#issuecomment-242425636).
+For some help on how to generate self-signed certificates [see this comment](https://github.com/nodejs/help/issues/253#issuecomment-242425636).
 
 ```javascript
 const { TokenServer, TokenClient } = require('token-server')
@@ -59,10 +59,10 @@ client.send(token)
 
 - [TokenClient](#tokenclient)
 	- [constructor](#tokenclient-constructor)
-	- [Event: "close"](#tokenclient--close-)
-	- [Event: "connect"](#tokenclient--connect-)
-	- [Event: "error"](#tokenclient--error-)
-	- [Event: "token"](#tokenclient--token-)
+	- [Event: "close"](#tokenclient-close)
+	- [Event: "connect"](#tokenclient-connect)
+	- [Event: "error"](#tokenclient-error)
+	- [Event: "token"](#tokenclient-token)
 	- [close()](#tokenclientclose)
 	- [connect()](#tokenclientconnect)
 	- [send()](#tokenclientsend)
