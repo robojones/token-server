@@ -1,6 +1,5 @@
 import { deepEqual, strictEqual } from 'assert'
 import { IBeforeAndAfterContext, ITestCallbackContext } from 'mocha'
-import once from 'once-promise'
 import { Duplex } from 'stream'
 import * as through from 'through2'
 import { Connection } from '../../../lib/connection/Connection'
@@ -18,11 +17,12 @@ describe('Connection', () => {
 			this.con = new Connection(this.stream)
 		})
 
-		it('should be emitted when a token is received', async function (this: Context) {
-			const p = once(this.con, 'token')
+		it('should be emitted when a token is received', async function (this: Context, cb) {
+			this.con.once('token', (token) => {
+				strictEqual(token.toString(), 'test')
+				cb()
+			})
 			this.stream.write('test\n')
-			const result = await p
-			strictEqual(result.toString(), 'test')
 		})
 
 		it('should be able to transmit multiple tokens in one message', function (this: Context) {
