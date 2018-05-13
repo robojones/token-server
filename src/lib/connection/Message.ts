@@ -29,6 +29,8 @@ export class Message {
 			}
 		}
 
+		result.push(NEWLINE)
+
 		return Buffer.from(result)
 	}
 
@@ -39,7 +41,8 @@ export class Message {
 	public static unescape(data: Buffer): Buffer {
 		const result: number[] = []
 
-		for (let i = 0; i < data.length; i++) {
+		// Ignore last byte because it's the separating newline.
+		for (let i = 0; i < data.length - 1; i++) {
 			const char = data[i]
 			const next = data[i + 1]
 

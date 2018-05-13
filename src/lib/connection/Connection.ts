@@ -36,7 +36,6 @@ export class Connection extends EventEmitter {
 		}
 
 		this.socket.write(Message.escape(data))
-		this.socket.write(Buffer.from([NEWLINE]))
 		return true
 	}
 
@@ -74,8 +73,9 @@ export class Connection extends EventEmitter {
 				break
 			}
 
-			const token = this.buffer.slice(0, i)
-			this.emit('token', Message.unescape(token))
+			// +1 to include the separating newline
+			const data = this.buffer.slice(0, i + 1)
+			this.emit('token', Message.unescape(data))
 
 			this.buffer = this.buffer.slice(i + 1)
 		}
