@@ -5,6 +5,7 @@
   "description": "Command Transport Protocol",
   "version": "0.0.0",
   "scripts": {
+		"lint": "tslint --project .",
     "watch": "tsc --watch",
     "build": "rm -rf build && tsc",
     "test": "yarn build && yarn nyc",
