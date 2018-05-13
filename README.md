@@ -1,6 +1,11 @@
-# token-server - TLS encrypted communication
+# token-server
+
+TLS encrypted communication
 
 [![CircleCI](https://circleci.com/gh/robojones/token-server.svg?style=svg)](https://circleci.com/gh/robojones/token-server)
+
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f74e4d181314dd0d1e31/test_coverage)](https://codeclimate.com/github/robojones/token-server/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f74e4d181314dd0d1e31/maintainability)](https://codeclimate.com/github/robojones/token-server/maintainability)
 
 This module simplifies SSL encrypted communication.
 It allows you to send messages (called tokens) from a client to a server and back.
