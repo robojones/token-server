@@ -2,7 +2,7 @@
   "name": "token-server",
   "main": "build/index",
   "typings": "build/index",
-  "description": "Command Transport Protocol",
+  "description": "TLS encrypted communication",
   "version": "0.0.4",
   "scripts": {
     "watch": "tsc --watch",
