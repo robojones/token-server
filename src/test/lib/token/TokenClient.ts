@@ -7,13 +7,11 @@ import { closeServer, setupServer } from './TokenServer'
 import { Context } from './TokenServerAndClient'
 
 export function setupClient (this: Context, cb) {
-	console.log('setupClient()')
 	this.client = new TokenClient(clientOptions)
 	this.client.once('connect', () => cb())
 }
 
 export function closeClient (this: Context, cb) {
-	console.log('closeClient()')
 	if (!this.client) {
 		return cb()
 	}
@@ -26,7 +24,6 @@ export function closeClient (this: Context, cb) {
 }
 
 export function waitForClientClose(this: Context, cb) {
-	console.log('waitForClientClose()')
 	if (!this.client) {
 		return cb()
 	}
@@ -162,7 +159,6 @@ describe('TokenClient', () => {
 
 			it('should get passed hadError=true if the client closed with no error', function (this: Context, cb) {
 				this.client.on('close', (hadError) => {
-					console.log('close!!!')
 					strictEqual(hadError, false, 'hadError is true')
 					cb()
 				})
