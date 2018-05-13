@@ -5,11 +5,12 @@
   "description": "Command Transport Protocol",
   "version": "0.0.0",
   "scripts": {
-		"lint": "tslint --project .",
     "watch": "tsc --watch",
+		"lint": "tslint --project .",
     "build": "rm -rf build && tsc",
     "test": "yarn build && yarn nyc",
-    "nyc": "nyc mocha 'build/test/**/*.js'"
+		"nyc": "nyc mocha 'build/test/**/*.js'",
+		"report-coverage": "codeclimate-test-reporter < coverage/lcov.info"
   },
   "engines": {
     "node": ">=7.0.0"
