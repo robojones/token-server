@@ -4,7 +4,7 @@ import { Context } from './TokenServerAndClient'
 
 export function setupServer (this: Context, cb) {
 	this.server = new TokenServer(serverOptions)
-	this.server.on('connect', () => {
+	this.server.once('connect', () => {
 		cb()
 	})
 }
@@ -14,7 +14,7 @@ export function closeServer (this: Context, cb) {
 		return cb()
 	}
 
-	this.server.on('close', () => {
+	this.server.once('close', () => {
 		cb()
 	})
 

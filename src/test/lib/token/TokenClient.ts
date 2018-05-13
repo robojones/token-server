@@ -1,4 +1,6 @@
 import { strictEqual } from 'assert'
+import * as assert from 'assert'
+
 import { TokenClient } from '../../..'
 import { clientOptions } from '../../options'
 import { closeServer, setupServer } from './TokenServer'
@@ -7,7 +9,7 @@ import { Context } from './TokenServerAndClient'
 export function setupClient (this: Context, cb) {
 	console.log('setupClient()')
 	this.client = new TokenClient(clientOptions)
-	this.client.on('connect', () => cb())
+	this.client.once('connect', () => cb())
 }
 
 export function closeClient (this: Context, cb) {
@@ -16,7 +18,7 @@ export function closeClient (this: Context, cb) {
 		return cb()
 	}
 
-	this.client.on('close', () => cb())
+	this.client.once('close', () => cb())
 
 	if (!this.client.close()) {
 		cb()
@@ -29,7 +31,7 @@ export function waitForClientClose(this: Context, cb) {
 		return cb()
 	}
 
-	this.client.on('close', () => cb())
+	this.client.once('close', () => cb())
 }
 
 describe('TokenClient', () => {
@@ -58,13 +60,54 @@ describe('TokenClient', () => {
 	})
 
 	describe('#send', () => {
-		it ('should return false if not connected.', function (this: Context) {
+		it('should return false if not connected.', function (this: Context) {
 			this.client = new TokenClient(clientOptions)
 			this.client.on('error', () => null)
 			this.client.close()
 
 			const success = this.client.send(Buffer.from('test'))
 			strictEqual(success, false, 'returned true')
+		})
+	})
+
+	describe('#connect', () => {
+
+		describe('when already connected', () => {
+			beforeEach(setupServer)
+			beforeEach(setupClient)
+			afterEach(closeClient)
+			afterEach(closeServer)
+			it('should return false if already connected', function (this: Context) {
+				const success = this.client.connect()
+				strictEqual(success, false, 'returned true')
+			})
+		})
+
+		describe('when not connected', () => {
+			beforeEach(setupServer)
+			beforeEach(setupClient)
+			beforeEach(closeClient)
+			afterEach(closeClient)
+			afterEach(closeServer)
+
+			it('should reconnect when not connected', function (this: Context, cb) {
+				const success = this.client.connect()
+				strictEqual(success, true, 'returned false')
+
+				this.client.on('connect', () => cb())
+			})
+
+			it('should reconnect after the timeout when one is provided',  function (this: Context, cb) {
+				const start = Date.now()
+				const success = this.client.connect(200)
+				strictEqual(success, true, 'returned false')
+
+				this.client.on('connect', () => {
+					const now = Date.now()
+					assert(now - start > 200, 'not enough delay')
+					cb()
+				})
+			})
 		})
 	})
 
