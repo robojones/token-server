@@ -19,6 +19,7 @@ gulpfile.js
 circle.yml
 
 # misc
+extra/
 .directory
 .gitignore
 *.log
