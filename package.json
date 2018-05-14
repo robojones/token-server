@@ -20,11 +20,13 @@
     "url": "git+https://github.com/robojones/token-server.git"
   },
   "keywords": [
-    "command",
-    "execute",
-    "async",
-    "tcp",
-    "socket"
+    "server",
+    "client",
+    "ssl",
+    "tls",
+		"socket",
+		"buffer",
+		"message"
   ],
   "author": "robojones",
   "license": "MIT",
