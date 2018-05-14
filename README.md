@@ -79,6 +79,12 @@ client.send(token)
 	- [Event: "token"](#tokenserver-token)
 	- [close()](#tokenserverclose)
 	- [connect()](#tokenserverconnect)
+- [Connection](#connection)
+	- [constructor](#connection-constructor)
+	- [Event: "token"](#connection-token)
+	- [isDead](#connectionisdead)
+	- [close()](#connectionclose)
+	- [send()](#connectionsend)
 
 ### TokenClient
 
@@ -143,7 +149,7 @@ client.on('token', (token, connection) => {
 ```
 
 - token `<Buffer>` The token that was received.
-- connection `<Connection>` The connection that sent the token.
+- connection `<Connection>` [see here](#connection) The connection that sent the token.
 
 #### TokenClient#close()
 
@@ -165,6 +171,8 @@ client.connect(delay)
 ```
 
 - delay `<number>` _(optional)_ Time in milliseconds to wait before a new connection to the server is created.
+
+Returns `true` if a new connection will be created. If the client is already connected, then `false` will be returned.
 
 #### TokenClient#send()
 
@@ -194,7 +202,7 @@ const server = new TokenServer(options)
 	- key `<string|Buffer>` The private key of the server.
 	- cert `<string|Buffer>` The SSL certificate of the server.
 	- ca `<string|Buffer>` The authority certificate (used for self signed certificates)
-	- All other options accepted by [tls.createServer()](https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener) and [server.listen](https://nodejs.org/api/net.html#net_server_listen).
+	- All other options accepted by [tls.createServer()](https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener) and [server.listen](https://nodejs.org/api/net.html#net_server_listen_options_callback).
 
 #### TokenServer: "close"
 
@@ -242,7 +250,7 @@ server.on('token', (token, connection) => {
 ```
 
 - token `<Buffer>` The token that was received.
-- connection `<Connection>` The connection that sent the token.
+- connection `<Connection>` [see here](#connection) The connection that sent the token.
 
 #### TokenServer#close()
 
@@ -262,7 +270,64 @@ This method is used to reconnect the server to its port.
 You can use this method if the port was used before und you want to retry to listen to the port.
 
 ```typescript
-client.connect(delay)
+const result = client.connect(delay)
 ```
 
 - delay `<number>` _(optional)_ Time in milliseconds to wait before the server tries to listen to the port.
+
+Returns `true` if a new connection will be created. If the server is already connected, then `false` will be returned.
+
+### Connection
+
+This class is a wrapper for a stream or socket.
+It parses all the data that goes through the stream and emits a `"token"` event when a token gets sent.
+The class can be used on both sides of a duplex stream to send and receive tokens.
+
+#### Connection constructor
+
+```typescript
+const connection = new Connection(socket)
+```
+
+- socket `<net.Socket>` [see here](https://nodejs.org/api/net.html#net_class_net_socket) A connection that can be created e.g. with [net.connect](https://nodejs.org/api/net.html#net_net_connect).
+
+#### Connection: "token"
+
+This event is emitted when a token arrives at the underlying socket.
+
+```typescript
+connection.on('token', (token) => {
+	// ...your code...
+})
+```
+
+- token `<Buffer>` The token that was received.
+
+#### Connection#isDead
+
+Is a boolean that is `true` if the underlying socket is writable and `false` if it is not.
+
+```typescript
+const status = connection.isDead
+```
+
+#### Connection#close()
+
+This method is used to disconnect from the server.
+
+```typescript
+const result = connection.close()
+```
+
+This method returns `true` if the connection was ended.
+If the client was already disconnected, the method returns `false`.
+
+#### Connection#send()
+
+This method allows you to send a token through the connection.
+
+```typescript
+const success = client.send(token)
+```
+
+The method returns `true` if the message was written to the underlying socket. It returns `false` if the connection is dead.
