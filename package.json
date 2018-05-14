@@ -3,7 +3,7 @@
   "main": "build/index",
   "typings": "build/index",
   "description": "TLS encrypted communication",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "scripts": {
     "watch": "tsc --watch",
     "lint": "tslint --project .",
@@ -24,9 +24,9 @@
     "client",
     "ssl",
     "tls",
-		"socket",
-		"buffer",
-		"message"
+    "socket",
+    "buffer",
+    "message"
   ],
   "author": "robojones",
   "license": "MIT",
