@@ -6,7 +6,7 @@ import { Connection } from '../../../lib/connection/Connection'
 
 
 describe('Connection', () => {
-	describe('"data" event', () => {
+	describe('"token" event', () => {
 		interface Context extends ITestCallbackContext, IBeforeAndAfterContext {
 			stream: Duplex
 			con: Connection
