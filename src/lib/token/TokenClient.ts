@@ -20,17 +20,17 @@ export class TokenClient extends TokenAPI {
 	}
 
 	public close() {
-		if (this.connection) {
-			const result = this.connection.close()
+		if (this.socket && this.socket.writable) {
+			this.socket.end()
 			this.connection = null
-			return result
+			return true
 		}
 
 		return false
 	}
 
 	public connect() {
-		if (this.connection && !this.connection.isDead) {
+		if (this.socket && this.socket.writable) {
 			// Old connection is still online → don't reconnect.
 			return false
 		}
