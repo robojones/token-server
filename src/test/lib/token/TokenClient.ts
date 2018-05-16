@@ -1,6 +1,6 @@
 import { strictEqual } from 'assert'
 
-import { TokenClient } from '../../..'
+import { Status, TokenClient } from '../../..'
 import { clientOptions } from '../../options'
 import { closeServer, setupServer } from './TokenServer'
 import { Context } from './TokenServerAndClient'
@@ -40,6 +40,7 @@ describe('TokenClient', () => {
 		it('should close the client', function (this: Context, cb) {
 			const result = this.client.close()
 			strictEqual(result, true, '#close() returned false')
+			strictEqual(this.client.status, Status.CLOSED)
 
 			this.client.on('close', () => cb())
 		})
@@ -73,6 +74,7 @@ describe('TokenClient', () => {
 			beforeEach(setupClient)
 			afterEach(closeClient)
 			afterEach(closeServer)
+
 			it('should return false if already connected', function (this: Context) {
 				const success = this.client.connect()
 				strictEqual(success, false, 'returned true')
@@ -105,6 +107,7 @@ describe('TokenClient', () => {
 				this.client = new TokenClient(clientOptions)
 
 				this.client.on('error', () => {
+					strictEqual(this.client.status, Status.FAILED)
 					cb()
 				})
 			})
@@ -118,6 +121,7 @@ describe('TokenClient', () => {
 				this.client = new TokenClient(clientOptions)
 				this.client.on('error', () => null)
 				this.client.on('close', (hadError) => {
+					strictEqual(this.client.status, Status.FAILED)
 					strictEqual(hadError, true, 'hadError is not true')
 					cb()
 				})
@@ -134,7 +138,10 @@ describe('TokenClient', () => {
 			it('should be emitted', function (this: Context, cb) {
 				this.client = new TokenClient(clientOptions)
 
-				this.client.on('connect', () => cb())
+				this.client.on('connect', () => {
+					strictEqual(this.client.status, Status.ONLINE)
+					cb()
+				})
 			})
 		})
 
@@ -144,8 +151,9 @@ describe('TokenClient', () => {
 			afterEach(closeClient)
 			afterEach(closeServer)
 
-			it('should get passed hadError=true if the client closed with no error', function (this: Context, cb) {
+			it('should get passed hadError=true if no error occured', function (this: Context, cb) {
 				this.client.on('close', (hadError) => {
+					strictEqual(this.client.status, Status.CLOSED)
 					strictEqual(hadError, false, 'hadError is true')
 					cb()
 				})

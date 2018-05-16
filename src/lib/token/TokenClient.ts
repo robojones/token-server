@@ -20,6 +20,8 @@ export class TokenClient extends TokenAPI {
 	}
 
 	public close() {
+		this.status = Status.CLOSED
+
 		if (this.socket && this.socket.writable) {
 			this.socket.end()
 			this.connection = null
@@ -62,15 +64,15 @@ export class TokenClient extends TokenAPI {
 	 */
 	private applyListeners() {
 		this.socket.on('error', (error: Error) => {
+			this.status = Status.FAILED
+
 			// Emit socket errors.
 			this.emit('error', error)
 		})
 
 		this.socket.on('close', (hadError) => {
 			// Update status.
-			if (hadError) {
-				this.status = Status.FAILED
-			} else {
+			if (!hadError) {
 				this.status = Status.CLOSED
 			}
 
