@@ -31,23 +31,14 @@ export class TokenServer extends TokenAPI {
 		return true
 	}
 
-	public connect(delay = 0) {
+	public connect() {
 		if (this.server.listening) {
 			return false
 		}
 
 		this.status = Status.CONNECTING
 
-		const connect = () => {
-			// Apply TCP options.
-			this.server.listen(this.options)
-		}
-
-		if (delay) {
-			setTimeout(connect, delay)
-		} else {
-			connect()
-		}
+		this.server.listen(this.options)
 
 		return true
 	}

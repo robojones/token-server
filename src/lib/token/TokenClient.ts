@@ -29,27 +29,18 @@ export class TokenClient extends TokenAPI {
 		return false
 	}
 
-	public connect(delay = 0) {
+	public connect() {
 		if (this.connection && !this.connection.isDead) {
 			// Old connection is still online → don't reconnect.
 			return false
 		}
 
-		const connect = () => {
-			this.status = Status.CONNECTING
+		this.status = Status.CONNECTING
 
-			this.socket = tls.connect(this.options)
-			this.connection = null
+		this.socket = tls.connect(this.options)
+		this.connection = null
 
-			this.applyListeners()
-
-		}
-
-		if (delay) {
-			setTimeout(connect, delay)
-		} else {
-			connect()
-		}
+		this.applyListeners()
 
 		return true
 	}

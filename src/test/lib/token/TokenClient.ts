@@ -1,5 +1,4 @@
 import { strictEqual } from 'assert'
-import * as assert from 'assert'
 
 import { TokenClient } from '../../..'
 import { clientOptions } from '../../options'
@@ -92,18 +91,6 @@ describe('TokenClient', () => {
 				strictEqual(success, true, 'returned false')
 
 				this.client.on('connect', () => cb())
-			})
-
-			it('should reconnect after the timeout when one is provided',  function (this: Context, cb) {
-				const start = Date.now()
-				const success = this.client.connect(200)
-				strictEqual(success, true, 'returned false')
-
-				this.client.on('connect', () => {
-					const now = Date.now()
-					assert(now - start > 200, 'not enough delay')
-					cb()
-				})
 			})
 		})
 	})
