@@ -27,6 +27,7 @@ export class TokenServer extends TokenAPI {
 			return false
 		}
 
+		this.status = Status.CLOSED
 		this.server.close()
 		return true
 	}
@@ -52,10 +53,12 @@ export class TokenServer extends TokenAPI {
 		this.server.on('error', (error: Error) => {
 			// Set status to failed so we know that it was closed by an error.
 			this.status = Status.FAILED
-			this.server.close()
 
 			// Emit server errors.
 			this.emit('error', error)
+
+			// Call close so the server emits the "close" event.
+			this.server.close()
 		})
 
 		this.server.on('close', () => {

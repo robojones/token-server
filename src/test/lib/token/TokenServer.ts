@@ -1,6 +1,6 @@
 import { strictEqual } from 'assert'
 
-import { TokenServer } from '../../..'
+import { Status, TokenServer } from '../../..'
 import { serverOptions } from '../../options'
 import { Context } from './TokenServerAndClient'
 
@@ -32,6 +32,7 @@ describe('TokenServer', () => {
 
 		it('should close the server', function (this: Context, cb) {
 			const result = this.server.close()
+			strictEqual(this.server.status, Status.CLOSED)
 			strictEqual(result, true, '#close() returned false')
 
 			this.server.on('close', () => cb())
@@ -66,6 +67,7 @@ describe('TokenServer', () => {
 
 			it('should reconnect when not connected', function (this: Context, cb) {
 				const success = this.server.connect()
+				strictEqual(this.server.status, Status.CONNECTING)
 				strictEqual(success, true, 'returned false')
 
 				this.server.on('connect', () => cb())
@@ -82,6 +84,7 @@ describe('TokenServer', () => {
 			it('should be emitted if port is already in use', function (this: Context, cb) {
 				const secondServer = new TokenServer(serverOptions)
 				secondServer.on('error', () => {
+					strictEqual(secondServer.status, Status.FAILED)
 					cb()
 				})
 			})
@@ -95,6 +98,7 @@ describe('TokenServer', () => {
 				const secondServer = new TokenServer(serverOptions)
 				secondServer.on('error', () => null)
 				secondServer.on('close', (hadError) => {
+					strictEqual(secondServer.status, Status.FAILED)
 					strictEqual(hadError, true, 'hadError is not true')
 					cb()
 				})
@@ -109,7 +113,10 @@ describe('TokenServer', () => {
 			it('should be emitted', function (this: Context, cb) {
 				this.server = new TokenServer(serverOptions)
 
-				this.server.on('connect', () => cb())
+				this.server.on('connect', () => {
+					strictEqual(this.server.status, Status.ONLINE)
+					cb()
+				})
 			})
 		})
 
@@ -118,6 +125,7 @@ describe('TokenServer', () => {
 
 			it('should get passed hadError=true if the server closed with no error', function (this: Context, cb) {
 				this.server.on('close', (hadError) => {
+					strictEqual(this.server.status, Status.CLOSED)
 					strictEqual(hadError, false, 'hadError is true')
 					cb()
 				})
