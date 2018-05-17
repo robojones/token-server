@@ -10,6 +10,7 @@ export class TokenClient extends TokenAPI {
 	private options: TokenClientOptions
 	private socket: tls.TLSSocket
 	private connection: Connection | null = null
+	private hadError: boolean
 
 	constructor(options: TokenClientOptions) {
 		super()
@@ -20,23 +21,24 @@ export class TokenClient extends TokenAPI {
 	}
 
 	public close() {
-		this.status = Status.CLOSED
-
-		if (this.socket && this.socket.writable) {
-			this.socket.end()
-			this.connection = null
-			return true
-		}
-
-		return false
-	}
-
-	public connect() {
-		if (this.socket && this.socket.writable) {
-			// Old connection is still online → don't reconnect.
+		if (this.status <= Status.CLOSED) {
+			// Already closed or offline.
 			return false
 		}
 
+		this.status = Status.CLOSED
+		this.socket.end()
+		this.connection = null
+		return true
+	}
+
+	public connect() {
+		if (this.status >= Status.CONNECTING) {
+			// Still connected.
+			return false
+		}
+
+		this.hadError = false
 		this.status = Status.CONNECTING
 
 		this.socket = tls.connect(this.options)
@@ -53,8 +55,8 @@ export class TokenClient extends TokenAPI {
 	 * @param token The token to transmit to the server.
 	 */
 	public send(token: Buffer): boolean {
-		if (this.connection && this.connection.send(token)) {
-			return true
+		if (this.connection) {
+			return this.connection.send(token)
 		}
 		return false
 	}
@@ -64,20 +66,17 @@ export class TokenClient extends TokenAPI {
 	 */
 	private applyListeners() {
 		this.socket.on('error', (error: Error) => {
-			this.status = Status.FAILED
+			this.hadError = true
 
 			// Emit socket errors.
 			this.emit('error', error)
 		})
 
-		this.socket.on('close', (hadError) => {
-			// Update status.
-			if (!hadError) {
-				this.status = Status.CLOSED
-			}
+		this.socket.on('close', () => {
+			this.status = Status.OFFLINE
 
 			// Emit own close event.
-			this.emit('close', hadError)
+			this.emit('close', this.hadError)
 		})
 
 		this.socket.on('secureConnect', () => {

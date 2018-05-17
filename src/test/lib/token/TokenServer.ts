@@ -84,7 +84,8 @@ describe('TokenServer', () => {
 			it('should be emitted if port is already in use', function (this: Context, cb) {
 				const secondServer = new TokenServer(serverOptions)
 				secondServer.on('error', () => {
-					strictEqual(secondServer.status, Status.FAILED)
+					// Status should not be updated yet.
+					strictEqual(secondServer.status, Status.CONNECTING)
 					cb()
 				})
 			})
@@ -98,7 +99,8 @@ describe('TokenServer', () => {
 				const secondServer = new TokenServer(serverOptions)
 				secondServer.on('error', () => null)
 				secondServer.on('close', (hadError) => {
-					strictEqual(secondServer.status, Status.FAILED)
+					// Status should be updated now.
+					strictEqual(secondServer.status, Status.OFFLINE)
 					strictEqual(hadError, true, 'hadError is not true')
 					cb()
 				})
@@ -125,7 +127,7 @@ describe('TokenServer', () => {
 
 			it('should get passed hadError=true if the server closed with no error', function (this: Context, cb) {
 				this.server.on('close', (hadError) => {
-					strictEqual(this.server.status, Status.CLOSED)
+					strictEqual(this.server.status, Status.OFFLINE)
 					strictEqual(hadError, false, 'hadError is true')
 					cb()
 				})

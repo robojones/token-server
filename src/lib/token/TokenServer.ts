@@ -10,6 +10,7 @@ export type TokenServerOptions = tls.TlsOptions & net.ListenOptions
 export class TokenServer extends TokenAPI {
 	private options: TokenServerOptions
 	private server: tls.Server
+	private hadError: boolean
 
 	constructor(options: TokenServerOptions) {
 		super()
@@ -33,10 +34,12 @@ export class TokenServer extends TokenAPI {
 	}
 
 	public connect() {
-		if (this.server.listening) {
+		if (this.status >= Status.CONNECTING) {
+			// Server already connecting or online.
 			return false
 		}
 
+		this.hadError = false
 		this.status = Status.CONNECTING
 
 		this.server.listen(this.options)
@@ -47,12 +50,13 @@ export class TokenServer extends TokenAPI {
 	private applyListeners() {
 		this.server.on('listening', () => {
 			this.status = Status.ONLINE
+
 			this.emit('connect')
 		})
 
 		this.server.on('error', (error: Error) => {
 			// Set status to failed so we know that it was closed by an error.
-			this.status = Status.FAILED
+			this.hadError = true
 
 			// Emit server errors.
 			this.emit('error', error)
@@ -62,13 +66,10 @@ export class TokenServer extends TokenAPI {
 		})
 
 		this.server.on('close', () => {
+			this.status = Status.OFFLINE
+
 			// Emit the close event.
-			if (this.status === Status.FAILED) {
-				this.emit('close', true)
-			} else {
-				this.status = Status.CLOSED
-				this.emit('close', false)
-			}
+			this.emit('close', this.hadError)
 		})
 
 		this.server.on('secureConnection', (socket) => {

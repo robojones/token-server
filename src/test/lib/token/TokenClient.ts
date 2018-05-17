@@ -107,7 +107,8 @@ describe('TokenClient', () => {
 				this.client = new TokenClient(clientOptions)
 
 				this.client.on('error', () => {
-					strictEqual(this.client.status, Status.FAILED)
+					// Status should not be updated yet.
+					strictEqual(this.client.status, Status.CONNECTING)
 					cb()
 				})
 			})
@@ -121,7 +122,8 @@ describe('TokenClient', () => {
 				this.client = new TokenClient(clientOptions)
 				this.client.on('error', () => null)
 				this.client.on('close', (hadError) => {
-					strictEqual(this.client.status, Status.FAILED)
+					// Status should now be updated.
+					strictEqual(this.client.status, Status.OFFLINE)
 					strictEqual(hadError, true, 'hadError is not true')
 					cb()
 				})
@@ -153,7 +155,7 @@ describe('TokenClient', () => {
 
 			it('should get passed hadError=true if no error occured', function (this: Context, cb) {
 				this.client.on('close', (hadError) => {
-					strictEqual(this.client.status, Status.CLOSED)
+					strictEqual(this.client.status, Status.OFFLINE)
 					strictEqual(hadError, false, 'hadError is true')
 					cb()
 				})

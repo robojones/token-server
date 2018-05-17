@@ -1,6 +1,6 @@
 export enum Status {
-	ONLINE = 0,
-	CONNECTING = 1,
-	CLOSED = 2,
-	FAILED = 3,
+	ONLINE = 3,
+	CONNECTING = 2,
+	CLOSED = 1,
+	OFFLINE = 0,
 }
