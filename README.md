@@ -12,7 +12,7 @@ It allows you to send messages (called tokens) from a client to a server and bac
 
 ## Example
 
-This example shows, how a client and a server can be connected using self-signed certificates.
+This example shows how a client and a server can be connected using self-signed certificates.
 
 For some help on how to generate self-signed certificates [see this comment](https://github.com/nodejs/help/issues/253#issuecomment-242425636).
 
@@ -27,7 +27,7 @@ const server = new TokenServer({
 
 	key: fs.readFileSync('certs/server/server.key'),
 	cert: fs.readFileSync('certs/server/server.crt'),
-	ca: fs.readFileSync('certs/ca/ca.crt')
+	ca: fs.readFileSync('certs/ca/ca.crt'),
 	requestCert: true, // ask for a client cert
 })
 
@@ -47,7 +47,7 @@ const client = new TokenClient({
 
 	key: fs.readFileSync('certs/client/client.key'),
 	cert: fs.readFileSync('certs/client/client.crt'),
-	ca: fs.readFileSync('certs/ca/ca.crt')
+	ca: fs.readFileSync('certs/ca/ca.crt'),
 })
 
 client.on('token', (token, connection) => {
