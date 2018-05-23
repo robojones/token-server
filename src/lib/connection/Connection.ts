@@ -2,6 +2,8 @@ import { EventEmitter } from 'events'
 import { Duplex } from 'stream'
 import { Message, NEWLINE } from './Message'
 
+const CLOSE_TOKEN = Buffer.from('\\\n')
+
 export declare interface Connection extends EventEmitter {
 	on(event: 'token', handler: (token: Buffer) => void): this
 }
@@ -52,6 +54,19 @@ export class Connection extends EventEmitter {
 	}
 
 	/**
+	 * Close the other side of the connection.
+	 * Returns true if the close token was written to the socket.
+	 */
+	public remoteClose(): boolean {
+		if (this.isDead) {
+			return false
+		}
+
+		this.socket.write(CLOSE_TOKEN)
+		return true
+	}
+
+	/**
 	 * Initially apply all events.
 	 */
 	private applyEvents() {
@@ -75,7 +90,12 @@ export class Connection extends EventEmitter {
 
 			// +1 to include the separating newline
 			const data = this.buffer.slice(0, i + 1)
-			this.emit('token', Message.unescape(data))
+
+			if (data.equals(CLOSE_TOKEN)) {
+				this.close()
+			} else {
+				this.emit('token', Message.unescape(data))
+			}
 
 			this.buffer = this.buffer.slice(i + 1)
 		}
