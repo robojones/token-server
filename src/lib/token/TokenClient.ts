@@ -70,9 +70,6 @@ export class TokenClient extends TokenAPI {
 
 			// Emit socket errors.
 			this.emit('error', error)
-
-			// Close if the error has not already closed the connection.
-			this.close()
 		})
 
 		this.socket.on('close', () => {
