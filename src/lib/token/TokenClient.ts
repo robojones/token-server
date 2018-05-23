@@ -11,6 +11,15 @@ export const defaultTokenClientOptions: TokenClientOptions = {
 	allowHalfOpen: true,
 }
 
+export declare interface TokenClient extends TokenAPI {
+	on(event: 'remoteClose', listener: () => void): this
+	on(event: string, listener: (...args: any[]) => void): this
+	once(event: 'remoteClose', listener: () => void): this
+	once(event: string, listener: (...args: any[]) => void): this
+	emit(event: 'remoteClose'): boolean
+	emit(event: string, ...args: any[]): boolean
+}
+
 export class TokenClient extends TokenAPI {
 	private options: TokenClientOptions
 	private socket: tls.TLSSocket
@@ -102,6 +111,10 @@ export class TokenClient extends TokenAPI {
 		connection.on('token', (token) => {
 			// Emit token
 			this.emit('token', token, connection)
+		})
+
+		connection.on('remoteClose', () => {
+			this.emit('remoteClose')
 		})
 
 		this.connection = connection
