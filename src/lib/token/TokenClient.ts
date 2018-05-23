@@ -1,10 +1,15 @@
+import * as net from 'net'
 import * as tls from 'tls'
 
 import { Connection } from '../connection/Connection'
 import { Status } from './Status'
 import { TokenAPI } from './TokenAPI'
 
-export type TokenClientOptions = tls.ConnectionOptions
+export type TokenClientOptions = tls.ConnectionOptions & net.SocketConstructorOpts
+
+export const defaultTokenClientOptions: TokenClientOptions = {
+	allowHalfOpen: true,
+}
 
 export class TokenClient extends TokenAPI {
 	private options: TokenClientOptions
@@ -15,7 +20,7 @@ export class TokenClient extends TokenAPI {
 	constructor(options: TokenClientOptions) {
 		super()
 
-		this.options = options
+		this.options = Object.assign({}, defaultTokenClientOptions, options)
 
 		this.connect()
 	}

@@ -5,7 +5,11 @@ import { Connection } from '../connection/Connection'
 import { Status } from './Status'
 import { TokenAPI } from './TokenAPI'
 
-export type TokenServerOptions = tls.TlsOptions & net.ListenOptions
+export type TokenServerOptions = tls.TlsOptions & net.ListenOptions & net.SocketConstructorOpts
+
+export const defaultTokenServerOptions: TokenServerOptions = {
+	allowHalfOpen: true,
+}
 
 export class TokenServer extends TokenAPI {
 	/** Contains all active connections */
@@ -18,9 +22,9 @@ export class TokenServer extends TokenAPI {
 	constructor(options: TokenServerOptions) {
 		super()
 
-		this.options = options
+		this.options = Object.assign({}, defaultTokenServerOptions, options)
 
-		this.server = tls.createServer(options)
+		this.server = tls.createServer(this.options)
 		this.applyListeners()
 		this.connect()
 	}
