@@ -3,7 +3,7 @@
   "main": "build/index",
   "typings": "build/index",
   "description": "TLS encrypted communication",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "watch": "tsc --watch",
     "lint": "tslint --project .",
