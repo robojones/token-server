@@ -5,7 +5,18 @@ import { Message, NEWLINE } from './Message'
 const CLOSE_TOKEN = Buffer.from('\\\n')
 
 export declare interface Connection extends EventEmitter {
+	/** The "token" event is emitted when a token is received from a socket. */
 	on(event: 'token', handler: (token: Buffer) => void): this
+	/** This event is emitted when the socket was closed from the other side of the socket. */
+	on(event: 'remoteClose', handler: () => void): this
+
+	/** The "token" event is emitted when a token is received from a socket. */
+	once(event: 'token', handler: (token: Buffer) => void): this
+	/** This event is emitted when the socket was closed from the other side of the socket. */
+	once(event: 'remoteClose', handler: () => void): this
+
+	emit(event: 'token', token: Buffer): boolean
+	emit(event: 'remoteClose'): boolean
 }
 
 /**
@@ -93,6 +104,7 @@ export class Connection extends EventEmitter {
 
 			if (data.equals(CLOSE_TOKEN)) {
 				this.close()
+				this.emit('remoteClose')
 			} else {
 				this.emit('token', Message.unescape(data))
 			}
