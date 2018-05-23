@@ -97,4 +97,39 @@ describe('Connection', () => {
 			strictEqual(this.con.close(), false, 'second call should return false')
 		})
 	})
+
+	describe('#remoteClose()', () => {
+		interface Context extends ITestCallbackContext, IBeforeAndAfterContext {
+			input: Duplex
+			output: Duplex
+			con: Connection
+		}
+
+		beforeEach(function beforeEachFn(this: Context) {
+			this.input = through()
+			this.output = through()
+			this.input.pipe(this.output)
+
+			this.con = new Connection(this.input)
+		})
+
+		it('should close the connection', function (this: Context, cb) {
+			this.output.on('finish', cb)
+			const success = this.con.remoteClose()
+			strictEqual(success, true)
+		})
+
+		it('should not close twice.', function (this: Context, cb) {
+			this.output.on('finish', cb)
+			const success = this.con.remoteClose()
+			strictEqual(success, true)
+		})
+
+		it('should return false if the close message was not written', function (this: Context, cb) {
+			this.output.on('finish', cb)
+			this.con.close()
+			const success = this.con.remoteClose()
+			strictEqual(success, false)
+		})
+	})
 })

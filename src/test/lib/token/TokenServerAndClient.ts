@@ -1,4 +1,4 @@
-import { strictEqual } from 'assert'
+import { deepEqual, strictEqual } from 'assert'
 import { IBeforeAndAfterContext, ITestCallbackContext } from 'mocha'
 import { TokenClient, TokenServer } from '../../..'
 import { closeClient, setupClient } from './TokenClient'
@@ -44,6 +44,15 @@ describe('TokenServer and TokenClient', () => {
 			})
 
 			this.client.send(Buffer.allocUnsafe(0))
+		})
+
+		it('should remove closed connections from server#connections', function (this: Context, cb) {
+			this.client.on('close', () => {
+				deepEqual(this.server.connections, [])
+				cb()
+			})
+
+			this.client.close()
 		})
 	})
 })

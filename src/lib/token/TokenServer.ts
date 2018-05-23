@@ -8,6 +8,9 @@ import { TokenAPI } from './TokenAPI'
 export type TokenServerOptions = tls.TlsOptions & net.ListenOptions
 
 export class TokenServer extends TokenAPI {
+	/** Contains all active connections */
+	public connections: Connection[] = []
+
 	private options: TokenServerOptions
 	private server: tls.Server
 	private hadError: boolean
@@ -74,6 +77,13 @@ export class TokenServer extends TokenAPI {
 
 		this.server.on('secureConnection', (socket) => {
 			const connection = new Connection(socket)
+
+			this.connections.push(connection)
+
+			socket.once('close', () => {
+				const i = this.connections.indexOf(connection)
+				this.connections.splice(i, 1)
+			})
 
 			connection.on('token', (token) => {
 				this.emit('token', token, connection)
