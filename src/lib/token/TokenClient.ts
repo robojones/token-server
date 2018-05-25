@@ -7,16 +7,24 @@ import { TokenAPI } from './TokenAPI'
 
 export type TokenClientOptions = tls.ConnectionOptions & net.SocketConstructorOpts
 
-export const defaultTokenClientOptions: TokenClientOptions = {
-	allowHalfOpen: true,
-}
-
 export declare interface TokenClient extends TokenAPI {
-	on(event: 'remoteClose', listener: () => void): this
+	/**
+	 * This event gets emitted when the server wants the client to close connection.
+	 * The client will then close the socket from its side.
+	 * When the allowHalfOpen option was set to true, the connection will still be writable from the server.
+	 */
+	on(event: 'remoteClose', listener: (connection: Connection) => void): this
 	on(event: string, listener: (...args: any[]) => void): this
-	once(event: 'remoteClose', listener: () => void): this
+
+	/**
+	 * This event gets emitted when the server wants the client to close connection.
+	 * The client will then close the socket from its side.
+	 * When the allowHalfOpen option was set to true, the connection will still be writable from the server.
+	 */
+	once(event: 'remoteClose', listener: (connection: Connection) => void): this
 	once(event: string, listener: (...args: any[]) => void): this
-	emit(event: 'remoteClose'): boolean
+
+	emit(event: 'remoteClose', connection: Connection): boolean
 	emit(event: string, ...args: any[]): boolean
 }
 
@@ -29,7 +37,7 @@ export class TokenClient extends TokenAPI {
 	constructor(options: TokenClientOptions) {
 		super()
 
-		this.options = Object.assign({}, defaultTokenClientOptions, options)
+		this.options = options
 
 		this.connect()
 	}
@@ -114,7 +122,7 @@ export class TokenClient extends TokenAPI {
 		})
 
 		connection.on('remoteClose', () => {
-			this.emit('remoteClose')
+			this.emit('remoteClose', connection)
 		})
 
 		this.connection = connection

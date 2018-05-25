@@ -7,12 +7,12 @@ const CLOSE_TOKEN = Buffer.from('\\\n')
 export declare interface Connection extends EventEmitter {
 	/** The "token" event is emitted when a token is received from a socket. */
 	on(event: 'token', handler: (token: Buffer) => void): this
-	/** This event is emitted when the socket was closed from the other side of the socket. */
+	/** This event is emitted when the socket receives the remote close token. */
 	on(event: 'remoteClose', handler: () => void): this
 
 	/** The "token" event is emitted when a token is received from a socket. */
 	once(event: 'token', handler: (token: Buffer) => void): this
-	/** This event is emitted when the socket was closed from the other side of the socket. */
+	/** This event is emitted when the socket receives the remote close token. */
 	once(event: 'remoteClose', handler: () => void): this
 
 	emit(event: 'token', token: Buffer): boolean
@@ -23,7 +23,7 @@ export declare interface Connection extends EventEmitter {
  * Wrapper for streams that emits "token".
  */
 export class Connection extends EventEmitter {
-	private socket: Duplex
+	public socket: Duplex
 	private buffer = Buffer.allocUnsafe(0)
 
 	constructor(socket: Duplex) {
