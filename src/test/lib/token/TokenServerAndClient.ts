@@ -55,4 +55,20 @@ describe('TokenServer and TokenClient', () => {
 			this.client.close()
 		})
 	})
+
+	describe('server#close and "remoteClose" event', () => {
+		beforeEach(setupServer)
+		beforeEach(setupClient)
+
+		afterEach(closeClient)
+		afterEach(closeServer)
+
+		it('should the clients', function (this: Context, cb) {
+			this.client.on('remoteClose', () => {
+				cb()
+			})
+
+			this.server.close()
+		})
+	})
 })
