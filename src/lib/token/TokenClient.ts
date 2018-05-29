@@ -9,17 +9,17 @@ export type TokenClientOptions = tls.ConnectionOptions & net.SocketConstructorOp
 
 export declare interface TokenClient extends TokenAPI {
 	/**
-	 * This event gets emitted when the server wants the client to close connection.
-	 * The client will then close the socket from its side.
-	 * When the allowHalfOpen option was set to true, the connection will still be writable from the server.
+	 * When TokenServer#close() is called it will send a close token to all clients.
+	 * The client will then emit the "remoteClose" event.
+	 * You need to call the Client#close() method in this event so the server can close.
 	 */
 	on(event: 'remoteClose', listener: (connection: Connection) => void): this
 	on(event: string, listener: (...args: any[]) => void): this
 
 	/**
-	 * This event gets emitted when the server wants the client to close connection.
-	 * The client will then close the socket from its side.
-	 * When the allowHalfOpen option was set to true, the connection will still be writable from the server.
+	 * When TokenServer#close() is called it will send a close token to all clients.
+	 * The client will then emit the "remoteClose" event.
+	 * You need to call the Client#close() method in this event so the server can close.
 	 */
 	once(event: 'remoteClose', listener: (connection: Connection) => void): this
 	once(event: string, listener: (...args: any[]) => void): this

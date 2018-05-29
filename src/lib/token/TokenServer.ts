@@ -85,7 +85,7 @@ export class TokenServer extends TokenAPI {
 
 			this.connections.push(connection)
 
-			socket.once('close', () => {
+			connection.once('close', () => {
 				const i = this.connections.indexOf(connection)
 				this.connections.splice(i, 1)
 			})

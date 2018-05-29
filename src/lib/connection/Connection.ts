@@ -7,16 +7,32 @@ const CLOSE_TOKEN = Buffer.from('\\\n')
 export declare interface Connection extends EventEmitter {
 	/** The "token" event is emitted when a token is received from a socket. */
 	on(event: 'token', handler: (token: Buffer) => void): this
-	/** This event is emitted when the socket receives the remote close token. */
+	/**
+	 * When TokenServer#close() is called it will send a close token to all clients.
+	 * The client will then emit the "remoteClose" event.
+	 * You need to call the Client#close() method in this event so the server can close.
+	 */
 	on(event: 'remoteClose', handler: () => void): this
+	/** The close event of the underlying socket. */
+	// tslint:disable-next-line:unified-signatures
+	on(event: 'close', handler: () => void): this
 
 	/** The "token" event is emitted when a token is received from a socket. */
 	once(event: 'token', handler: (token: Buffer) => void): this
-	/** This event is emitted when the socket receives the remote close token. */
+	/**
+	 * When TokenServer#close() is called it will send a close token to all clients.
+	 * The client will then emit the "remoteClose" event.
+	 * You need to call the Client#close() method in this event so the server can close.
+	 */
 	once(event: 'remoteClose', handler: () => void): this
+	/** The close event of the underlying socket. */
+	// tslint:disable-next-line:unified-signatures
+	once(event: 'close', handler: () => void): this
 
 	emit(event: 'token', token: Buffer): boolean
 	emit(event: 'remoteClose'): boolean
+	// tslint:disable-next-line:unified-signatures
+	emit(event: 'close'): boolean
 }
 
 /**
@@ -86,6 +102,9 @@ export class Connection extends EventEmitter {
 
 			this.parse()
 		})
+
+		// Bubble up close event.
+		this.socket.on('close', () => this.emit('close'))
 	}
 
 	/**
@@ -103,7 +122,6 @@ export class Connection extends EventEmitter {
 			const data = this.buffer.slice(0, i + 1)
 
 			if (data.equals(CLOSE_TOKEN)) {
-				this.close()
 				this.emit('remoteClose')
 			} else {
 				this.emit('token', Message.unescape(data))

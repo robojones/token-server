@@ -102,7 +102,8 @@ describe('Connection', () => {
 		interface Context extends ITestCallbackContext, IBeforeAndAfterContext {
 			input: Duplex
 			output: Duplex
-			con: Connection
+			in: Connection
+			out: Connection
 		}
 
 		beforeEach(function beforeEachFn(this: Context) {
@@ -110,25 +111,19 @@ describe('Connection', () => {
 			this.output = through()
 			this.input.pipe(this.output)
 
-			this.con = new Connection(this.input)
+			this.in = new Connection(this.input)
+			this.out = new Connection(this.output)
 		})
 
-		it('should close the connection', function (this: Context, cb) {
-			this.output.on('finish', cb)
-			const success = this.con.remoteClose()
+		it('should trigger the "remoteClose" event', function (this: Context, cb) {
+			this.out.on('remoteClose', cb)
+			const success = this.in.remoteClose()
 			strictEqual(success, true)
 		})
 
-		it('should not close twice.', function (this: Context, cb) {
-			this.output.on('finish', cb)
-			const success = this.con.remoteClose()
-			strictEqual(success, true)
-		})
-
-		it('should return false if the close message was not written', function (this: Context, cb) {
-			this.output.on('finish', cb)
-			this.con.close()
-			const success = this.con.remoteClose()
+		it('should return false if the close message was not written', function (this: Context) {
+			this.in.close()
+			const success = this.in.remoteClose()
 			strictEqual(success, false)
 		})
 	})
