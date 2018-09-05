@@ -18,10 +18,10 @@ jobs:
             - node_modules/
       - run:
           name: Install & initialize codeclimate test reporter
-          command:
-            - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            - chmod +x ./cc-test-reporter
-            - ./cc-test-reporter before-build
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
       - run:
           name: Run linter
           command: yarn lint
