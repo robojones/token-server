@@ -17,6 +17,7 @@ gulpfile.js
 
 # ci
 circle.yml
+cc-test-reporter
 
 # misc
 extra/

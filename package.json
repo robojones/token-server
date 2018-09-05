@@ -9,8 +9,7 @@
     "lint": "tslint --project .",
     "build": "rm -rf build && tsc",
     "test": "yarn build && yarn nyc",
-    "nyc": "nyc mocha 'build/test/**/*.js'",
-    "report-coverage": "codeclimate-test-reporter < coverage/lcov.info"
+    "nyc": "nyc mocha 'build/test/**/*.js'"
   },
   "engines": {
     "node": ">=7.0.0"
@@ -38,7 +37,6 @@
     "@types/mocha": "^2.2.44",
     "@types/node": "^9.3.0",
     "@types/through2": "^2.0.33",
-    "codeclimate-test-reporter": "^0.5.0",
     "mocha": "^4.0.1",
     "nyc": "^11.4.1",
     "through2": "^2.0.3",
