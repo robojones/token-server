@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 COMMIT_HASH=$(git rev-parse --verify HEAD)
 
-curl --user ${CODECLIMATE_TEST_TOKEN}: \
+curl --user ${CIRCLECI_TEST_TOKEN}: \
     --request POST \
     --form revision=${COMMIT_HASH}\
     --form config=config.yml \
